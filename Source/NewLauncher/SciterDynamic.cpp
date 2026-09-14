@@ -17,14 +17,14 @@ bool InitSciterDynamic() {
         return false;
     }
 
-    // pega a função SciterAPI
+    // pega a funï¿½ï¿½o SciterAPI
     auto pSciterAPI = (SciterAPI_ptr)GetProcAddress(hSciter, "SciterAPI");
     if (!pSciterAPI) {
         MessageBoxA(NULL, "Falha ao resolver SciterAPI", "Erro", MB_ICONERROR);
         return false;
     }
 
-    // pega a tabela de funções
+    // pega a tabela de funï¿½ï¿½es
     g_SciterApi = pSciterAPI();
     if (!g_SciterApi) {
         MessageBoxA(NULL, "SciterAPI retornou NULL", "Erro", MB_ICONERROR);
