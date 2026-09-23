@@ -28,6 +28,17 @@ if not exist "!MSBUILD!" (
 echo [OK] Found MSBuild: "!MSBUILD!"
 echo.
 
+:: Check and setup OpenSSL if needed
+if not exist "Libs\openssl\lib\libcrypto.lib" (
+    if exist "C:\Program Files (x86)\OpenSSL-Win32\lib\VC\static\libcrypto.lib" (
+        echo [INFO] Copying OpenSSL Win32 static libraries...
+        copy /Y "C:\Program Files (x86)\OpenSSL-Win32\lib\VC\static\*.lib" "Libs\openssl\lib\" >nul
+    ) else if exist "C:\Program Files (x86)\OpenSSL-Win32\lib\libcrypto.lib" (
+        echo [INFO] Copying OpenSSL Win32 libraries...
+        copy /Y "C:\Program Files (x86)\OpenSSL-Win32\lib\*.lib" "Libs\openssl\lib\" >nul
+    )
+)
+
 :: Restore NuGet Packages if nuget is available
 where nuget >nul 2>nul
 if %errorlevel% equ 0 (

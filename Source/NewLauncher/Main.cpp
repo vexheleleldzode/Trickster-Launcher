@@ -1,5 +1,3 @@
-﻿#define MI_MALLOC_OVERRIDE
-#include <mimalloc-new-delete.h>
 #include "Gui.h"
 #include "Config.h"
 #include <thread>
