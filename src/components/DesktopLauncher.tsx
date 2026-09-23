@@ -17,7 +17,8 @@ import {
   User,
   Activity,
   AlertTriangle,
-  Settings2
+  Settings2,
+  Cpu
 } from 'lucide-react';
 
 interface DesktopLauncherProps {
@@ -46,6 +47,7 @@ interface DesktopLauncherProps {
   onSelectAccount: (accountId: string) => void;
   onLaunchWithAccount: (account: UserAccount) => void;
   onRetryConnection: () => void;
+  onOpenAutoBuild?: () => void;
 }
 
 export const DesktopLauncher: React.FC<DesktopLauncherProps> = ({
@@ -73,6 +75,7 @@ export const DesktopLauncher: React.FC<DesktopLauncherProps> = ({
   onSelectAccount,
   onLaunchWithAccount,
   onRetryConnection,
+  onOpenAutoBuild,
 }) => {
   const lang = LANGUAGES[language] || LANGUAGES.zh || LANGUAGES.en;
 
@@ -745,6 +748,19 @@ export const DesktopLauncher: React.FC<DesktopLauncherProps> = ({
             >
               FileListGen
             </button>
+            {onOpenAutoBuild && (
+              <>
+                <span>•</span>
+                <button
+                  onClick={onOpenAutoBuild}
+                  className="hover:text-emerald-300 text-emerald-400/90 px-1 py-0.5 rounded transition-colors cursor-pointer text-[9px] flex items-center gap-0.5 font-medium"
+                  title="查看与运行 GitHub Actions 自动编译流水线"
+                >
+                  <Cpu size={9} className="text-emerald-400" />
+                  自动编译 CI/CD
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -83,7 +83,7 @@ std::string Helper::GetFileFromURL(const std::string& customPath)
     auto fetch = [&](auto& cli) -> std::string 
     {
         cli.set_follow_location(true);
-        cli.set_connection_timeout(5, 0);
+        cli.set_connection_timeout(config::UpdateTimeoutSeconds, 0);
         auto res = cli.Get(customPath.c_str());
         if (!res || res->status != 200)
             return "";
@@ -199,7 +199,7 @@ bool Helper::DownloadFile(const std::string& remoteFile, const std::string& loca
     auto doDownload = [&](auto& cli) -> bool
     {
         cli.set_follow_location(true);
-        cli.set_connection_timeout(5, 0);
+        cli.set_connection_timeout(config::UpdateTimeoutSeconds, 0);
         std::ofstream out(localPath, std::ios::binary);
         if (!out) return false;
         long downloaded = 0;

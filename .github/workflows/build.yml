@@ -1,0 +1,85 @@
+name: Build & Release Trickster Launcher
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows Binaries (Win32 / x86)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSBuild Path
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet CLI
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore NuGet Packages
+        run: |
+          nuget restore Source\NewLauncher\packages.config -PackagesDirectory packages
+
+      - name: Build Solution (Release | Win32)
+        run: |
+          msbuild TricksterLauncher.sln /p:Configuration=Release /p:Platform=Win32 /m /verbosity:minimal
+
+      - name: Verify Build Outputs
+        shell: pwsh
+        run: |
+          Write-Host "Checking compiled outputs in Output directory..."
+          Get-ChildItem -Recurse -Path Output/
+
+      - name: Create Release Zip Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "Release_Artifacts"
+          if (Test-Path "Output\Trickster Launcher") {
+            Copy-Item -Recurse "Output\Trickster Launcher\*" -Destination "Release_Artifacts\"
+          }
+          if (Test-Path "Output\FileListGen\FileListGen.exe") {
+            Copy-Item "Output\FileListGen\FileListGen.exe" -Destination "Release_Artifacts\"
+          }
+          if (Test-Path "public\resources") {
+            Copy-Item -Recurse "public\resources" -Destination "Release_Artifacts\"
+          }
+          Compress-Archive -Path "Release_Artifacts\*" -DestinationPath "TricksterLauncher-Win32-Release.zip" -Force
+          Write-Host "Archive created: TricksterLauncher-Win32-Release.zip"
+
+      - name: Upload Build Artifacts (Actions)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Trickster-Launcher-Win32-Release
+          path: |
+            TricksterLauncher-Win32-Release.zip
+            Output/**
+          retention-days: 30
+
+      - name: Publish GitHub Release (On Tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: TricksterLauncher-Win32-Release.zip
+          name: "Trickster Launcher Release ${{ github.ref_name }}"
+          body: |
+            ### 🎮 Trickster Launcher 自动编译发布版本
+            - **版本号**: ${{ github.ref_name }}
+            - **内置特性**:
+              - 超时容错机制（自动切换离线就绪，不阻塞进入游戏）
+              - 游戏服务器 IP 与端口自定义配置
+              - CDN 更新源地址与超时时间调节
+              - 多账号记忆与自动登录
+          draft: false
+          prerelease: false

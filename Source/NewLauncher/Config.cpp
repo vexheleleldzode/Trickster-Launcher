@@ -6,10 +6,14 @@ namespace config
 	std::wstring WindowTitle	= L"Trickster Launcher";	  // Window title in the TaskBar
 	std::string SubTitle	    = "Trickster Launcher";		 // text that appears at the top of the launcher
 	std::string LauncherCDN		= "cdn.selenoid.com.br";		// Your launcher website, without http or https
-	std::wstring BaseNewsURL	= L"https://google.com.br";// Link to your news page
+	std::wstring BaseNewsURL	= L"https://google.com.br"; // Link to your news page
 	std::string WebsiteLink		= "https://google.com";	  // Link to your website
 	std::string OptionExecName  = "Setup.exe";			 // Name of the Options executable
 	bool IsCDNUsingSSL			= true;					// Tells the launcher if your launcher update link uses SSL or not
+	int UpdateTimeoutSeconds    = 3;                    // Connection timeout in seconds (Default 3s - prevents hanging)
 	bool IsDllInjectEnable		= false;			   // Tells the launcher to inject or not the DLL defined below when you click Game Start
 	std::string InjectDLLName	= "Trickster.dll";	  // Name of the DLL to be injected by the option above
+	std::string ServerIP        = "127.0.0.1";         // Default Game Server IP
+	int ServerPort              = 21000;               // Login Port
+	int WorldPort               = 21001;               // World/Map Port
 }

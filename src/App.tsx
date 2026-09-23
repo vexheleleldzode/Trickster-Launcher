@@ -6,6 +6,7 @@ import { ConfigEditorDialog } from './components/ConfigEditorDialog';
 import { GameClientSimulation } from './components/GameClientSimulation';
 import { ServerConfigDialog } from './components/ServerConfigDialog';
 import { AccountManagerDialog } from './components/AccountManagerDialog';
+import { AutoBuildDialog } from './components/AutoBuildDialog';
 import {
   DEFAULT_CONFIG,
   DEFAULT_OPTIONS,
@@ -37,6 +38,7 @@ import {
   WifiOff,
   Clock,
   Play,
+  Cpu,
 } from 'lucide-react';
 
 export function App() {
@@ -128,6 +130,7 @@ export function App() {
   const [isConfigEditorOpen, setIsConfigEditorOpen] = useState(false);
   const [isServerConfigOpen, setIsServerConfigOpen] = useState(false);
   const [isAccountManagerOpen, setIsAccountManagerOpen] = useState(false);
+  const [isAutoBuildOpen, setIsAutoBuildOpen] = useState(false);
   const [isGameRunning, setIsGameRunning] = useState(false);
   const [showArchDocs, setShowArchDocs] = useState(false);
 
@@ -331,6 +334,18 @@ export function App() {
             账号与自动登录
           </button>
 
+          {/* User Requested: Auto Build CI/CD */}
+          <button
+            id="top-auto-build-btn"
+            type="button"
+            onClick={() => setIsAutoBuildOpen(true)}
+            className="px-3 py-1.5 rounded font-medium bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/80 text-emerald-200 flex items-center gap-1.5 transition-colors cursor-pointer text-xs shadow-sm"
+            title="查看与运行 GitHub Actions 自动编译流水线"
+          >
+            <Cpu size={13} className="text-emerald-400" />
+            自动编译 CI/CD
+          </button>
+
           {/* Update Server Timeout Simulator (Allows testing the user requirement easily) */}
           <div className="flex items-center bg-neutral-900 border border-neutral-700 rounded overflow-hidden text-[11px]">
             <span className="px-2 py-1 text-neutral-400 font-medium">更新服测试:</span>
@@ -432,6 +447,7 @@ export function App() {
             isUpdateServerOffline={isUpdateServerOffline}
             updateServerTimeout={updateServerTimeout}
             onRetryConnection={() => runFileCheck(false, 'normal')}
+            onOpenAutoBuild={() => setIsAutoBuildOpen(true)}
           />
         </div>
 
@@ -581,6 +597,14 @@ export function App() {
         dllName={config.injectDLLName}
         serverConfig={gameServer}
         activeAccount={activeAccount}
+      />
+
+      {/* User Requested: Auto Build CI/CD Dialog */}
+      <AutoBuildDialog
+        isOpen={isAutoBuildOpen}
+        onClose={() => setIsAutoBuildOpen(false)}
+        config={config}
+        serverConfig={gameServer}
       />
     </div>
   );
