@@ -226,6 +226,15 @@ namespace gui
         ImGui::DestroyContext();
     }
 
+    static std::string WideToUtf8(const std::wstring& wstr)
+    {
+        if (wstr.empty()) return "";
+        int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+        std::string str(size, 0);
+        WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &str[0], size, nullptr, nullptr);
+        return str;
+    }
+
     // Helper: Find resource file from multiple potential locations
     static std::string FindResourcePath(const std::string& relPath)
     {
@@ -436,7 +445,8 @@ namespace gui
         }
 
         // 2. Custom Title Bar Area (x: 0..538, y: 0..24)
-        drawList->AddText(ImVec2(12, 5), IM_COL32(220, 220, 220, 255), config::WindowTitle.c_str());
+        std::string winTitle = WideToUtf8(config::WindowTitle);
+        drawList->AddText(ImVec2(12, 5), IM_COL32(220, 220, 220, 255), winTitle.c_str());
         drawList->AddText(ImVec2(340, 5), IM_COL32(180, 180, 190, 200), config::SubTitle.c_str());
 
         // Minimize & Close buttons
@@ -500,13 +510,13 @@ namespace gui
         // News Content Body Area
         ImVec2 contentPos(newsPos.x + 12.0f, newsPos.y + 36.0f);
 
-        // Offline / Timeout Banner
-        if (g_Helper.isUpdateServerTimeout || g_Helper.isUpdateServerOffline)
+        // Maintenance Banner
+        if (g_Helper.isMaintenance)
         {
             drawList->AddRectFilled(contentPos, ImVec2(contentPos.x + 479.0f, contentPos.y + 38.0f), IM_COL32(65, 35, 15, 240), 3.0f);
             drawList->AddRect(contentPos, ImVec2(contentPos.x + 479.0f, contentPos.y + 38.0f), IM_COL32(210, 130, 40, 255), 3.0f);
-            drawList->AddText(ImVec2(contentPos.x + 8.0f, contentPos.y + 5.0f), IM_COL32(255, 200, 80, 255), "[注意] 更新服务器连接超时 - 已自动切换离线就绪模式");
-            drawList->AddText(ImVec2(contentPos.x + 8.0f, contentPos.y + 20.0f), IM_COL32(210, 210, 210, 240), "游戏登录不受影响，您可直接点击右下方“开始游戏”进入！");
+            drawList->AddText(ImVec2(contentPos.x + 8.0f, contentPos.y + 5.0f), IM_COL32(255, 200, 80, 255), "[注意] 服务器维护中 (Server Under Maintenance)");
+            drawList->AddText(ImVec2(contentPos.x + 8.0f, contentPos.y + 20.0f), IM_COL32(210, 210, 210, 240), "游戏服务器正在例行维护，请关注官网与交流群最新公告！");
             contentPos.y += 46.0f;
         }
 
@@ -591,9 +601,8 @@ namespace gui
         drawList->AddRect(ImVec2(24, 412), ImVec2(24 + 362, 412 + 12), IM_COL32(60, 65, 80, 200), 1.0f);
 
         // 6. Action Buttons with authentic PNG texture skins
-        // Game start lock: locked if worker is busy, UNLESS timeout occurred (to never block playing offline)
-        bool isGameLocked = (!g_Helper.isWorkerDone && !g_Helper.isUpdateServerTimeout && !g_Helper.isUpdateServerOffline) || g_Helper.isMaintenance;
-        bool isOtherLocked = (!g_Helper.isWorkerDone && !g_Helper.isUpdateServerTimeout && !g_Helper.isUpdateServerOffline);
+        bool isGameLocked = (!g_Helper.isWorkerDone) || g_Helper.isMaintenance;
+        bool isOtherLocked = !g_Helper.isWorkerDone;
 
         // Check Files: x: 23, y: 432, w: 113, h: 27
         if (DrawCustomImageButton(
