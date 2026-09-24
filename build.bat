@@ -59,6 +59,14 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
+:: Ensure 32-bit OpenSSL runtime DLLs are placed alongside executables
+if exist "Output\Trickster Launcher" (
+    copy /Y "Libs\openssl\bin\*.dll" "Output\Trickster Launcher\" >nul
+)
+if exist "Output\FileListGen" (
+    copy /Y "Libs\openssl\bin\*.dll" "Output\FileListGen\" >nul
+)
+
 echo.
 echo ===============================================================
 echo [SUCCESS] Build completed successfully!

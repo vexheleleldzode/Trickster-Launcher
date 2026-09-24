@@ -77,6 +77,9 @@ jobs:
           if (Test-Path "Output\FileListGen\FileListGen.exe") {
             Copy-Item "Output\FileListGen\FileListGen.exe" -Destination "Release_Artifacts\"
           }
+          if (Test-Path "Libs\openssl\bin") {
+            Copy-Item "Libs\openssl\bin\*.dll" -Destination "Release_Artifacts\" -Force
+          }
           if (Test-Path "public\resources") {
             Copy-Item -Recurse "public\resources" -Destination "Release_Artifacts\"
           }
