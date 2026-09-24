@@ -198,7 +198,7 @@ namespace gui
                                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
                                  ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-        ImGui::Begin("TricksterMainLauncher", nullptr, flags);
+        ImGui::Begin("TricksterMainLauncher", nullptr, nullptr, flags);
 
         // Header
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.95f, 0.75f, 0.25f, 1.0f));

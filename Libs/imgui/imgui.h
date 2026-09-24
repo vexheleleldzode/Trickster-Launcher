@@ -368,6 +368,7 @@ namespace ImGui
     //    BeginXXX function returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
     // - Note that the bottom of window stack always contains a window called "Debug".
     IMGUI_API bool          Begin(const char* name, bool* p_open = NULL, bool* p_minimize = NULL, ImGuiWindowFlags flags = 0);
+    inline bool             Begin(const char* name, bool* p_open, ImGuiWindowFlags flags) { return Begin(name, p_open, NULL, flags); }
     IMGUI_API void          End();
 
     // Child Windows
