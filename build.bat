@@ -59,9 +59,12 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-:: Ensure 32-bit OpenSSL runtime DLLs are placed alongside executables
+:: Ensure 32-bit OpenSSL runtime DLLs and resources are placed alongside executables
 if exist "Output\Trickster Launcher" (
     copy /Y "Libs\openssl\bin\*.dll" "Output\Trickster Launcher\" >nul
+    if not exist "Output\Trickster Launcher\resources" mkdir "Output\Trickster Launcher\resources"
+    if exist "public\resources" xcopy /y /e /i /d "public\resources" "Output\Trickster Launcher\resources\" >nul
+    if exist "Source\NewLauncher\Resources" xcopy /y /e /i /d "Source\NewLauncher\Resources" "Output\Trickster Launcher\resources\" >nul
 )
 if exist "Output\FileListGen" (
     copy /Y "Libs\openssl\bin\*.dll" "Output\FileListGen\" >nul

@@ -108,7 +108,9 @@
       <AdditionalDependencies>d3d9.lib;d3dx9.lib;libcrypto.lib;libssl.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Libs\openssl\bin\*.dll" "$(OutDir)"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)Libs\openssl\bin\*.dll" "$(OutDir)"
+if exist "$(SolutionDir)public\resources" xcopy /y /e /i /d "$(SolutionDir)public\resources" "$(OutDir)resources"
+if exist "$(SolutionDir)Source\NewLauncher\Resources" xcopy /y /e /i /d "$(SolutionDir)Source\NewLauncher\Resources" "$(OutDir)resources"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -81,7 +81,8 @@ jobs:
             Copy-Item "Libs\openssl\bin\*.dll" -Destination "Release_Artifacts\" -Force
           }
           if (Test-Path "public\resources") {
-            Copy-Item -Recurse "public\resources" -Destination "Release_Artifacts\"
+            New-Item -ItemType Directory -Force -Path "Release_Artifacts\resources"
+            Copy-Item -Recurse -Force "public\resources\*" -Destination "Release_Artifacts\resources\"
           }
           Compress-Archive -Path "Release_Artifacts\*" -DestinationPath "TricksterLauncher-Win32-Release.zip" -Force
           Write-Host "Archive created: TricksterLauncher-Win32-Release.zip"
