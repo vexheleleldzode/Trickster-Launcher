@@ -2,7 +2,6 @@
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "httplib.h"
 #include <d3d9.h>
-#include <d3dx9.h>
 #include <fstream>
 #include <vector>
 #include <string>

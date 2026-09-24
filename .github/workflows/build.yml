@@ -31,28 +31,27 @@ jobs:
       - name: Setup OpenSSL (Win32)
         shell: pwsh
         run: |
-          Write-Host "Installing OpenSSL 32-bit (x86) via Chocolatey..."
-          choco install openssl.light -y --x86 --no-progress
-          $sslPath = "C:\Program Files (x86)\OpenSSL-Win32"
-          if (Test-Path $sslPath) {
-            Write-Host "Configuring OpenSSL headers and static libraries from $sslPath..."
-            New-Item -ItemType Directory -Force -Path "Libs\openssl\lib"
-            New-Item -ItemType Directory -Force -Path "Libs\openssl\include\openssl"
-            if (Test-Path "$sslPath\include\openssl") {
-              Copy-Item -Recurse -Force "$sslPath\include\openssl\*" "Libs\openssl\include\openssl\"
+          if (-not (Test-Path "Libs\openssl\lib\libcrypto.lib")) {
+            Write-Host "Installing OpenSSL 32-bit (x86) via Chocolatey..."
+            choco install openssl.light -y --x86 --no-progress
+            $sslPath = "C:\Program Files (x86)\OpenSSL-Win32"
+            if (Test-Path $sslPath) {
+              Write-Host "Configuring OpenSSL headers and libraries from $sslPath..."
+              New-Item -ItemType Directory -Force -Path "Libs\openssl\lib"
+              if (Test-Path "$sslPath\lib\VC\static") {
+                Copy-Item -Recurse -Force "$sslPath\lib\VC\static\*.lib" "Libs\openssl\lib\"
+              }
+              if (Test-Path "$sslPath\lib\VC") {
+                Copy-Item -Recurse -Force "$sslPath\lib\VC\*.lib" "Libs\openssl\lib\"
+              }
+              if (Test-Path "$sslPath\lib\*.lib") {
+                Copy-Item -Recurse -Force "$sslPath\lib\*.lib" "Libs\openssl\lib\"
+              }
             }
-            if (Test-Path "$sslPath\lib\VC\static") {
-              Copy-Item -Recurse -Force "$sslPath\lib\VC\static\*.lib" "Libs\openssl\lib\"
-            }
-            if (Test-Path "$sslPath\lib\VC") {
-              Copy-Item -Recurse -Force "$sslPath\lib\VC\*.lib" "Libs\openssl\lib\"
-            }
-            if (Test-Path "$sslPath\lib\*.lib") {
-              Copy-Item -Recurse -Force "$sslPath\lib\*.lib" "Libs\openssl\lib\"
-            }
-            Write-Host "OpenSSL libraries ready:"
-            Get-ChildItem -Path "Libs\openssl\lib"
+          } else {
+            Write-Host "OpenSSL libraries already present in repository."
           }
+          Get-ChildItem -Path "Libs\openssl\lib"
 
       - name: Restore NuGet Packages
         run: |
